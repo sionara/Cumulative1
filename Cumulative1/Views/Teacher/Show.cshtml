@@ -4,8 +4,13 @@
 }
 
 <h2>@Model.TeacherFName @Model.TeacherLName</h2>
+<a href="/Teacher/List">Back to Teacher List</a>
 <ul>
     <li>Employee Number: @Model.EmployeeNumber</li>
-    <li>Hire Date: @Model.HireDate</li>
+    <li>Hire Date: @Model.HireDate.ToShortDateString()</li>
     <li>Salary: @Model.Salary</li>
 </ul>
+
+<div>
+    <a href="/Teacher/ConfirmDelete/@Model.TeacherId">Delete this Teacher</a>
+</div>

@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Cumulative1.Models;
 using MySql.Data.MySqlClient;
+using System.Web.Http.Cors;
 
 namespace Cumulative1.Controllers
 {
@@ -152,5 +153,86 @@ namespace Cumulative1.Controllers
 
             return teacher;
         }
+
+        /// <summary>
+        /// Insert a new Teacher object into the teachers table in School Db.
+        /// </summary>
+        /// <param name="newTeacher">The Teacher object that will be inserted into the Db.</param>
+        /// EXAMPLE: api/TeacherData -> New Teacher will be added to the teachers table. 
+        /// Sample:
+        ///<Teacher xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/Cumulative1.Models">
+        ///<EmployeeNumber>sample string 4</EmployeeNumber>
+        ///<HireDate>2023-12-01T20:52:34.0958606-05:00</HireDate>
+        ///<Salary>6.1</Salary>
+        ///<TeacherFName>sample string 2</TeacherFName>
+        ///<TeacherId>1</TeacherId>
+        ///<TeacherLName>sample string 3</TeacherLName>
+        ///</Teacher>
+        [HttpPost]
+        [EnableCors(origins: "*", methods: "*", headers: "*")] //allow cross origin resource sharing. Allows api to share resources accessed through another domain. 
+        public void AddTeacher([FromBody]Teacher newTeacher)
+        {
+            // Initialize connection to DB.
+            MySqlConnection Conn = School.AccessDatabase();
+
+            //open connection.
+            Conn.Open();
+
+            //create variable to represent SQL query
+            MySqlCommand query = Conn.CreateCommand();
+
+            //validation. if first name is empty, will return to list without adding teacher.
+            if (newTeacher.TeacherFName == "")
+            {
+                return;
+            }
+
+            //Send appropriate query.
+            query.CommandText = "INSERT INTO teachers (teacherfname, teacherlname, employeenumber, hiredate, salary)" +
+                "VALUES (@fname, @lname, @eNum, @hireDate, @salary)";
+
+            query.Parameters.AddWithValue("@fname", newTeacher.TeacherFName);
+            query.Parameters.AddWithValue("@lname", newTeacher.TeacherLName);
+            query.Parameters.AddWithValue("@eNum", newTeacher.EmployeeNumber);
+            query.Parameters.AddWithValue("@hireDate", newTeacher.HireDate);
+            query.Parameters.AddWithValue("@salary", newTeacher.Salary);
+            query.Prepare();
+
+            //use this when modifying a database instead of retrieving data.
+            query.ExecuteNonQuery();
+
+            // close connection to prevent memory leak
+            Conn.Close();
+        }
+
+        /// <summary>
+        /// Deletes a teacher from the teachers table with teacherId = id.
+        /// </summary>
+        /// <param name="id">The id of the teacher to be deleted.</param>
+        /// EXAMPLE POST: /api/TeacherData/{id} -> Deletes Teacher with teacherId = {id}
+        [HttpPost]
+        public void DeleteTeacher(int id)
+        {
+            // Initialize connection to DB.
+            MySqlConnection Conn = School.AccessDatabase();
+
+            //open connection.
+            Conn.Open();
+
+            //create variable to represent SQL query
+            MySqlCommand query = Conn.CreateCommand();
+
+            //Send appropriate query.
+            query.CommandText = "DELETE FROM teachers WHERE TeacherId=@key";
+            query.Parameters.AddWithValue("@key", id);
+            query.Prepare();
+
+            //use this when modifying a database instead of retrieving data.
+            query.ExecuteNonQuery();
+
+            // close connection to prevent memory leak
+            Conn.Close();
+        }
+
     }
 }
