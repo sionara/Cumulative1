@@ -39,7 +39,7 @@ namespace Cumulative1.Controllers
             return View();
         }
 
-        //GET : /Author/Ajax_New
+        //GET : /Teacher/Ajax_New
         public ActionResult Ajax_New()
         {
             return View();
