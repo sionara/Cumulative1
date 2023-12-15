@@ -121,7 +121,11 @@ namespace Cumulative1.Controllers
             MySqlCommand query = Conn.CreateCommand();
 
             //Send appropriate query.
-            query.CommandText = "SELECT * FROM teachers WHERE teacherid = " + id;
+            query.CommandText = "SELECT * FROM teachers WHERE teacherid = @id";
+
+            //create a parameter to sanitize input.
+            query.Parameters.AddWithValue("@id", id);
+            query.Prepare();
 
             //Initialize a variable to store the ResultSet.
             MySqlDataReader ResultSet = query.ExecuteReader();
@@ -181,10 +185,11 @@ namespace Cumulative1.Controllers
             //create variable to represent SQL query
             MySqlCommand query = Conn.CreateCommand();
 
-            //validation. if first name is empty, will return to list without adding teacher.
-            if (newTeacher.TeacherFName == "")
+            //validation. if any of the inputs are empty, will return to list without adding teacher.
+            if (newTeacher.TeacherFName == "" || newTeacher.TeacherLName == "" || newTeacher.EmployeeNumber == "" ||
+                newTeacher.HireDate.GetType() != typeof(DateTime) || newTeacher.Salary.GetType() != typeof(double)) // checking that the data type for date and salary arre correct.
             {
-                return;
+                return; // ends method without executing query. 
             }
 
             //Send appropriate query.
@@ -233,6 +238,61 @@ namespace Cumulative1.Controllers
             // close connection to prevent memory leak
             Conn.Close();
         }
+        /// <summary>
+        /// Updates an existing Teacher in school MySQL Db. Non-deterministic. This means the same input could yield different results.
+        /// This is because this method may or may not work based on the existence of a teacher in the teachers table with teacherid = id.
+        /// </summary>
+        /// <param name="id">The id of the teacher to update</param>
+        /// <param name="newTeacherInfo">The new information to update the teacher with. Received via POST request. </param>
+        /// <example>
+        /// POST api/TeacherData/UpdateTeacher/1
+        /// Form data /POST Data / Request body
+        /// {
+        /// "TeacherFname": sion
+        /// "TeacherLname": lee
+        /// "EmployeeNumber": T111
+        ///  "HireDate": 12-12-23
+        ///  "Salary": 50
+        ///  the above will be the new info used to update teacher with teacherid = 1.
+        /// }
+        /// </example>
+        [HttpPost]
+        [EnableCors(origins: "*", methods: "*", headers: "*")] //allow clients from any domain namespace to access this API. AKA CORS.
+        public void UpdateTeacher(int id, [FromBody]Teacher newTeacherInfo)
+        {
+            // Initialize connection to DB.
+            MySqlConnection Conn = School.AccessDatabase();
 
+            //open connection.
+            Conn.Open();
+
+            //create variable to represent SQL query
+            MySqlCommand query = Conn.CreateCommand();
+
+            //validation. if any of the inputs are empty, will return to list without adding teacher.
+            if (newTeacherInfo.TeacherFName == "" || newTeacherInfo.TeacherLName == "" || newTeacherInfo.EmployeeNumber == "" ||
+                newTeacherInfo.HireDate.GetType() != typeof(DateTime) || newTeacherInfo.Salary.GetType() != typeof(double)) // checking that the data type for date and salary arre correct.
+            {
+                return; // ends method without executing query. 
+            }
+
+            //Send appropriate query.
+            query.CommandText = "UPDATE teachers SET teacherfname=@fname, teacherlname=@lname, " +
+                "employeenumber=@eNum, hiredate=@hireDate, salary=@salary WHERE teacherid=@id";
+
+            query.Parameters.AddWithValue("@fname", newTeacherInfo.TeacherFName);
+            query.Parameters.AddWithValue("@lname", newTeacherInfo.TeacherLName);
+            query.Parameters.AddWithValue("@eNum", newTeacherInfo.EmployeeNumber);
+            query.Parameters.AddWithValue("@hireDate", newTeacherInfo.HireDate);
+            query.Parameters.AddWithValue("@salary", newTeacherInfo.Salary);
+            query.Parameters.AddWithValue("@id", id); // this is the id for the specific teacher coming over as a GET request in URL.
+            query.Prepare();
+
+            //use this when modifying a database instead of retrieving data.
+            query.ExecuteNonQuery();
+
+            // close connection to prevent memory leak
+            Conn.Close();
+        }
     }
 }

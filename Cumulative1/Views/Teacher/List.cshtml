@@ -3,23 +3,27 @@
     ViewBag.Title = "List";
 }
 
-<h2>Teacher List</h2>
-<a href="/Teacher/New">Click Here to Add a new Teacher</a> <!--for links, just include folder name/filename-->
-<form action="" method="GET">
-    <div>
-        <input type="text" name="TeacherSearchKey" placeholder="Find a Teacher!"/>
-        <input type="submit" value="Search" />
-    </div>
-</form>
-<div id="teacher_list">
+<div class="wrapper">
+    <h2>Teacher List</h2>
+    <a href="/Teacher/New">Click Here to Add a new Teacher</a> <!--for links, just include folder name/filename-->
+    <form action="" method="GET">
+        <div>
+            <input type="text" name="TeacherSearchKey" placeholder="Find a Teacher!" />
+            <input type="submit" value="Search" />
+        </div>
+    </form>
+
     @foreach (var teacher in Model)
-            {
-                <div class="teacher_list_item">
-                    <div><a href="/Teacher/Show/@teacher.TeacherId">@teacher.TeacherFName @teacher.TeacherLName</a></div>
-                </div>
-            }
+    {
+        <div>
+            <div><a href="/Teacher/Show/@teacher.TeacherId">@teacher.TeacherFName @teacher.TeacherLName</a></div>
+        </div>
+    }
 </div>
 
-<button>
-    <a href="/Teacher/Ajax_New">Click here to go to Ajax version of adding a new teacher.</a>
-</button>
+<form action="/Teacher/Ajax_New" method="get">
+    <div class="wrapper">
+        <button id="ajax">Click here to go to Ajax version of adding a new teacher</button>
+    </div>
+    
+</form>

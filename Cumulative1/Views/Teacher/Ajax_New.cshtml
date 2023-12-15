@@ -5,7 +5,7 @@
 
 <h2>Ajax_New</h2>
 
-<div id="containershow">
+<div class="wrapper">
     <nav>
         <a class="navlink" href="/Teacher/List">Back To Teachers</a>
     </nav>
@@ -23,24 +23,24 @@
         <input type="text" id="TeacherFname" name="TeacherFname" />
 
     </div>
-    
+
     <div class="inputrow">
         <label for="TeacherLname">Last Name:</label>
         <input type="text" id="TeacherLname" name="TeacherLname" />
 
     </div>
-   
+
     <div class="inputrow">
         <label for="eNum">Employee Number:</label>
         <input type="text" id="eNum" name="eNum" />
     </div>
-    
+
     <div class="inputrow">
         <label for="HireDate">Hire Date:</label>
         <input type="date" id="HireDate" name="HireDate">
 
     </div>
-   
+
     <div class="inputrow">
         <label for="Salary">Salary:</label>
         <input type="number" id="Salary" name="Salary">
@@ -49,4 +49,8 @@
         //AddTeacher() is a JS method defined in /Scripts/Teachers.js
     }
     <button onclick="AddTeacher();">Add Teacher</button>
+
+    <div>After you press Add Teacher, go back to the list to see your new teacher!</div>
 </div>
+
+

@@ -113,7 +113,11 @@ namespace Cumulative1.Controllers
             MySqlCommand query = Conn.CreateCommand();
 
             //Send appropriate query.
-            query.CommandText = "SELECT * FROM students WHERE studentid = " + id;
+            query.CommandText = "SELECT * FROM students WHERE studentid = @id";
+
+            //create a parameter to preven SQL injection
+            query.Parameters.AddWithValue("@id", id);
+            query.Prepare();
 
             //Initialize a variable to store the ResultSet.
             MySqlDataReader ResultSet = query.ExecuteReader();

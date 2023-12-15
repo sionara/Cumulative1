@@ -11,3 +11,21 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* site.css not linking to views*/
+a {
+    text-decoration: none;
+    color: lightcoral;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items: center;
+    gap: 0.5em;
+}
+
+li {
+    list-style:none;
+}

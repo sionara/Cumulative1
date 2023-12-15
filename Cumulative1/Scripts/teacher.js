@@ -1,7 +1,7 @@
 ﻿function AddTeacher() {
 
 	// URL to direct the API call.
-	var URL = "http://localhost:54597/api/TeacherData/AddTeacher"; //not working. something is incorrect with this URL.
+	var URL = "http://localhost:54597/api/TeacherData/AddTeacher"; 
 
 	var xhr = new XMLHttpRequest();
 
@@ -27,12 +27,12 @@
 	xhr.onreadystatechange = function () {
 		//ready state should be 4 AND status should be 200
 		if (xhr.readyState == 4 && xhr.status == 200) {
-
+			alert("Teacher was added successfully!");
 			//nothing to put here since we are not injecting new HTML from the client-side.
 		}
 
 	}
 	//POST information sent through the .send() method
-	xhr.send(JSON.stringify(TeacherData)); //WE get a 400 error here.
+	xhr.send(JSON.stringify(TeacherData)); 
 
 }
